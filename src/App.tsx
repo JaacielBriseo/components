@@ -2,6 +2,7 @@ import { Route } from './components/Route';
 import { Sidebar } from './components/Sidebar';
 import { AccordionPage } from './pages/AccordionPage';
 import { ButtonPage } from './pages/ButtonPage';
+import { CounterPage } from './pages/CounterPage';
 import { DropdownPage } from './pages/DropdownPage';
 import { ModalPage } from './pages/ModalPage';
 import { TablePage } from './pages/TablePage';
@@ -16,6 +17,7 @@ const App = () => {
 				<Route path='/button' children={<ButtonPage />} />
 				<Route path='/modal' children={<ModalPage />} />
 				<Route path='/table' children={<TablePage />} />
+				<Route path='/counter' children={<CounterPage initialCount={10}/>} />
 			</div>
 		</div>
 	);

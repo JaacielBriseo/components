@@ -7,6 +7,7 @@ export const Sidebar = () => {
 		{ label: 'Button', path: '/button' },
 		{ label: 'Modal', path: '/modal' },
 		{ label: 'Table', path: '/table' },
+		{ label: 'Counter', path: '/counter' },
 	];
 	const renderedLinks = links.map(link => (
 		<Link key={link.label} to={link.path} className='mb-3' activeClassName='font-bold border-l-4 border-blue-500 pl-2'>
