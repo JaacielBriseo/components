@@ -1,6 +1,43 @@
+import { Fragment } from 'react';
+import { Fruit } from '../pages/TablePage';
 
-export const Table = () => {
-  return (
-    <div>Table</div>
-  )
+interface Props {
+	data: Fruit[];
+	config: {
+		label: string;
+		render: (x: Fruit) => number | string | JSX.Element;
+		header?: () => JSX.Element;
+		sortValue?: (fruit: Fruit) => number | string;
+	}[];
+	keyFn: (fruit: Fruit) => string;
 }
+
+export const Table = ({ data, config, keyFn }: Props) => {
+	const renderedHeaders = config.map(column => {
+		if (column.header) {
+			return <Fragment key={column.label}>{column.header()}</Fragment>;
+		}
+		return <th key={column.label}>{column.label}</th>;
+	});
+
+	const renderedRows = data.map(rowData => {
+		const renderedCells = config.map(column => (
+			<td key={column.label} className='p-2'>
+				{column.render(rowData)}
+			</td>
+		));
+		return (
+			<tr key={keyFn(rowData)} className='border-b'>
+				{renderedCells}
+			</tr>
+		);
+	});
+	return (
+		<table className='table-auto border-spacing-2'>
+			<thead>
+				<tr className='border-b-2'>{renderedHeaders}</tr>
+			</thead>
+			<tbody>{renderedRows}</tbody>
+		</table>
+	);
+};
