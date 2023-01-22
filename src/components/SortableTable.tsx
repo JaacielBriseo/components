@@ -66,32 +66,34 @@ export const SortableTable = (props: Props) => {
 };
 
 function getIcons(label: string, sortBy: string | null, sortOrder: 'asc' | 'desc' | null) {
-	if (label !== sortBy) {
-		return (
-			<div>
-				<GoArrowSmallDown />
-				<GoArrowSmallUp />
-			</div>
-		);
+	const isSortedBy = label === sortBy;
+	let arrow;
+	switch (sortOrder) {
+		case 'asc':
+			arrow = <GoArrowSmallUp />;
+			break;
+		case 'desc':
+			arrow = <GoArrowSmallDown />;
+			break;
+		default:
+			arrow = (
+				<>
+					<GoArrowSmallDown />
+					<GoArrowSmallUp />
+				</>
+			);
+			break;
 	}
-	if (sortOrder === 'asc') {
-		return (
-			<div>
-				<GoArrowSmallUp />
-			</div>
-		);
-	} else if (sortOrder === 'desc') {
-		return (
-			<div>
-				<GoArrowSmallDown />
-			</div>
-		);
-	} else {
-		return (
-			<div>
-				<GoArrowSmallDown />
-				<GoArrowSmallUp />
-			</div>
-		);
-	}
+	return (
+		<div>
+			{isSortedBy ? (
+				arrow
+			) : (
+				<>
+					<GoArrowSmallDown />
+					<GoArrowSmallUp />
+				</>
+			)}
+		</div>
+	);
 }
