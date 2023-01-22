@@ -1,7 +1,7 @@
 import { Fruit } from '../pages/TablePage';
 import { Table } from './Table';
-import { useState } from 'react';
 import { GoArrowSmallDown, GoArrowSmallUp } from 'react-icons/go';
+import { useSort } from '../hooks/useSort';
 
 interface Props {
 	data: Fruit[];
@@ -15,19 +15,7 @@ interface Props {
 
 export const SortableTable = (props: Props) => {
 	const { config, data } = props;
-	const [sortOrder, setSortOrder] = useState<'asc' | 'desc' | null>(null);
-	const [sortBy, setSortBy] = useState<string | null>(null);
-
-	const handleClick = (label: string) => {
-		if (sortBy && label !== sortBy) {
-			setSortOrder('asc');
-			setSortBy(label);
-			return;
-		}
-
-		setSortOrder(sortOrder === 'asc' ? 'desc' : 'asc');
-		setSortBy(label);
-	};
+	const { setSortColumn, sortBy, sortOrder, sortedData } = useSort({ data, config });
 
 	const updatedConfig = config.map(column => {
 		if (!column.sortValue) {
@@ -37,7 +25,7 @@ export const SortableTable = (props: Props) => {
 		return {
 			...column,
 			header: () => (
-				<th className='cursor-pointer hover:bg-gray-100' onClick={() => handleClick(column.label)} key={column.label}>
+				<th className='cursor-pointer hover:bg-gray-100' onClick={() => setSortColumn(column.label)} key={column.label}>
 					<div className='flex items-center'>
 						{getIcons(column.label, sortBy, sortOrder)}
 						{column.label}
@@ -47,25 +35,19 @@ export const SortableTable = (props: Props) => {
 		};
 	});
 
-	let sortedData = data;
-	if (sortOrder && sortBy) {
-		const { sortValue } = config.find(column => column.label === sortBy)!;
-		sortedData = [...data].sort((a, b) => {
-			const valueA = sortValue!(a);
-			const valueB = sortValue!(b);
-
-			const reverseOrder = sortOrder === 'asc' ? 1 : -1;
-			if (typeof valueA === 'string') {
-				return valueA.localeCompare(typeof valueB === 'string' ? valueB : '') * reverseOrder;
-			} else {
-				return (valueA - (typeof valueB === 'number' ? valueB : 1)) * reverseOrder;
-			}
-		});
-	}
 	return <Table {...props} data={sortedData} config={updatedConfig} />;
 };
+interface GetIconsProps {
+	label: string;
+	sortBy: string | null;
+	sortOrder: 'asc' | 'desc' | null;
+}
 
-function getIcons(label: string, sortBy: string | null, sortOrder: 'asc' | 'desc' | null) {
+function getIcons(
+	label: GetIconsProps['label'],
+	sortBy: GetIconsProps['sortBy'],
+	sortOrder: GetIconsProps['sortOrder']
+) {
 	const isSortedBy = label === sortBy;
 	let arrow;
 	switch (sortOrder) {
